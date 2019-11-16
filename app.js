@@ -22,7 +22,7 @@
 
 'use strict';
 const PAGE_ACCESS_TOKEN = "EAAGpWrXip1kBAKE8ZAin78sLQtVq5FtzrCz1fCyvLpEaPcF3qKTK5EPZCA6PH8g5CdqPvZAtZCbZCDXWHICbimyCf7vgfYl53NeJAc74aqzwrg0ZBPIye1ZAoUnuTVmKj308rv59mNN64xZBDpME0SKCd4mbnAqoZArVDZAV06OCUZBaFy6BXWs6wbV";
-const PERSONA_ID = "523362768242700";
+const PERSONA_ID = "736072903558118";
 const TYPING_OFF_DELAY = 2000
 // Imports dependencies and set up http server
 const
@@ -122,6 +122,7 @@ function handleMessage(sender_psid, received_message) {
     // will be added to the body of our request to the Send API
     if (received_message.text.includes("persona")) {
       response = genTextWithPersona("hello",PERSONA_ID)
+
     } else {
       response = nyergh.storyIdToQuickReply("GAME_INTRO")
     }
@@ -234,4 +235,5 @@ function genTextWithPersona(text, persona_id) {
 
   return response;
 }
+
 
