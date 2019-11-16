@@ -123,6 +123,7 @@ function handleMessage(sender_psid, received_message) {
     // will be added to the body of our request to the Send API
     if (received_message.text.includes("persona")) {
       hasPersona = true
+      response = nyergh.storyIdToQuickReply("GAME_INTRO")
     } else {
       response = nyergh.storyIdToQuickReply("GAME_INTRO")
     }
@@ -231,7 +232,7 @@ function sendMessage(request_body, action_description, delay = 0) {
   }, delay);
 }
 
-function sendTextWithPersona(sender_psid, text, persona_id) {
+function sendTextWithPersona(sender_psid, response, persona_id) {
   // Construct the message body
   let request_body = {
     "recipient": {

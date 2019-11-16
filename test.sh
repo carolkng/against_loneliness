@@ -10,7 +10,7 @@ curl -X POST -H "Content-Type: application/json" -d '{
         "id": "SENDER_ID"
       },
       "message": {
-        "text": "hello, world!"
+        "text": "hello, persona!"
       }
     }]
   }]
