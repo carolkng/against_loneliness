@@ -1,0 +1,93 @@
+{
+    "STORY_INTRO": {
+        "message": "This is the start of the story. Press start to begin.",
+        "responses": [
+            {
+                "next_id": "ENTER_ROOM",
+                "text": "Start"
+            },
+            {
+                "next_id": "RUDE",
+                "text": "Don't tell me what to do."
+            }
+        ]
+    },
+    "ENTER_ROOM": {
+        "message": "You enter a room. What do you do?",
+        "responses": [
+            {
+                "next_id": "SIT_DOWN",
+                "text": "Sit down, read a book"
+            },
+            {
+                "next_id": "WALK_OUT",
+                "text": "Walk away slowly."
+            }
+        ]
+    },
+    "RUDE": {
+        "message": "Rude. Press start to begin.",
+        "responses": [
+            {
+                "next_id": "ENTER_ROOM",
+                "text": "Start"
+            },
+            {
+                "next_id": "RUDE",
+                "text": "Don't tell me what to do."
+            }
+        ]
+    },
+    "SIT_DOWN": {
+        "message": "You sat down on a pile of spikes. You die. Press start to try again",
+        "responses": [
+            {
+                "next_id": "ENTER_ROOM",
+                "text": "Start"
+            },
+            {
+                "next_id": "RUDE",
+                "text": "Don't tell me what to do."
+            }
+        ]
+    },
+    "WALK_OUT": {
+        "message": "You walked out of the spiky room into a hallway. There is a mailbox here.",
+        "responses": [
+            {
+                "next_id": "GOOD_END",
+                "text": "Open the mailbox"
+            },
+            {
+                "next_id": "BAD_END",
+                "text": "Walk away slowly."
+            }
+        ]
+    },
+    "GOOD_END": {
+        "message": "You opened the mailbox and found a dollar. Congratulations! Press start to try again.",
+        "responses": [
+            {
+                "next_id": "ENTER_ROOM",
+                "text": "Start"
+            },
+            {
+                "next_id": "RUDE",
+                "text": "Don't tell me what to do."
+            }
+        ]
+    },
+    "BAD_END": {
+        "message": "You keep walking away from adventure, and miss out on a lifetime of excitement. Press start to try again.",
+        "responses": [
+            {
+                "next_id": "ENTER_ROOM",
+                "text": "Start"
+            },
+            {
+                "next_id": "RUDE",
+                "text": "Don't tell me what to do."
+            }
+        ]
+    }
+}
