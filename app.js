@@ -145,10 +145,11 @@ function handleMessage(sender_psid, received_message) {
         }
       }
     }
+    callSendAPI(sender_psid, response);    
   } 
   
   // Send the response message
-  callSendAPI(sender_psid, response);    
+  //callSendAPI(sender_psid, response);    
 }
 
 function handlePostback(sender_psid, received_postback) {
