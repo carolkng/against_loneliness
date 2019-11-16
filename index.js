@@ -9,6 +9,9 @@ const
   bodyParser = require('body-parser'),
   app = express().use(bodyParser.json()); // creates express http server
 
+  app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({ extended: false }));
+
 
 console.log("hi1");
 // Sets server port and logs message on success
