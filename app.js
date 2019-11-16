@@ -108,14 +108,15 @@ function handleMessage(sender_psid, received_message) {
     // Create the payload for a basic text message, which
     // will be added to the body of our request to the Send API
     response = {
-      "text": `You entered code: "${received_message.text}". Now beginning story...`,
-      callSendAPI(sender_psid, response);
+      "text": `You entered code: "${received_message.text}". Now beginning story...`
     }
+    callSendAPI(sender_psid, response);
 
     response = {
-      "text": `You're name is Brian and you are hard at work.`,
-      callSendAPI(sender_psid, response);
+      "text": `You're name is Brian and you are hard at work.`
     }
+    callSendAPI(sender_psid, response);
+    
   } else if (received_message.attachments) {
     // Get the URL of the message attachment
     let attachment_url = received_message.attachments[0].payload.url;
