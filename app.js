@@ -193,7 +193,7 @@ function sendSeenTypingIndicators(sender_psid, response) {
 
   sendMessage(mark_read, "Mark message read")
   sendMessage(typing_on, "Set typing on")
-  //sendMessage(typing_off, "Set typing off", TYPING_OFF_DELAY)
+  sendMessage(typing_off, "Set typing off", TYPING_OFF_DELAY)
 }
 
 function sendTextMessage(sender_psid, response) {
@@ -202,7 +202,6 @@ function sendTextMessage(sender_psid, response) {
     "recipient": {
       "id": sender_psid
     },
-    "sender_action": "typing_off",
     "message": response
   }
 
