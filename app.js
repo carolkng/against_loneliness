@@ -111,16 +111,17 @@ function handleMessage(sender_psid, received_message) {
     console.log("received_message.text:");
     console.log(received_message.text)
     
-    storyId = "STORY_INTRO"
-    
     if (received_message.quick_reply) {
-      storyId = received_message.quick_reply.payload
-    } 
+      let storyId = received_message.quick_reply.payload
+      response = nyergh.storyIdToQuickReply(storyId)
+      callSendAPI(sender_psid, response);
+    } else {
+      response = nyergh.storyIdToQuickReply("STORY_INTRO")
+      callSendAPI(sender_psid, response);
+    }
     
     // Create the payload for a basic text; message, which
     // will be added to the body of our request to the Send API
-    response = nyergh.storyIdToQuickReply(storyId)
-    callSendAPI(sender_psid, response);
 
     // response = {
     //   "text": `You're name is Brian and you are hard at work.`
