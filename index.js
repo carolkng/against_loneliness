@@ -1,6 +1,6 @@
 'use strict';
 
-const PAGE_ACCESS_TOKEN = "EAAGpWrXip1kBABb1n93psEZCRZAGlCYfJKeuXgZBLX7zqE5NlZB4hCGhZA7Ia7QBfWM8l4ttmU0tVBNb2s2QoFH4fSAaHDF7wAtHrmeD5Ra0N9IUOE1exvcZBS6ZAsmV3YF3lSp2aJHXbSXrZAIVp6e3MWbtXXck9DoEngvQporOCQFemAkYLp3C";
+const PAGE_ACCESS_TOKEN = "EAAOk3VqTNZBkBAGsbHDW3PsvG1b59PCcfo6SYKnVZAvEDd3F6DWxykNTxr2519msw1cDjiZBbseJmQRv4IAucXDyjPuRT1P0NRe22JpjNr898ny7IKaBr0TlrRlyaNqhJhWsd2rIEZAr2J5BU4VZAlBpudPPC7KyrKv5nhZBgZCyzcTWT3Dbtlh";
 const request = require('request');
 
 // Imports dependencies and set up http server
