@@ -23,6 +23,7 @@
 'use strict';
 const PAGE_ACCESS_TOKEN = "EAAGpWrXip1kBAKE8ZAin78sLQtVq5FtzrCz1fCyvLpEaPcF3qKTK5EPZCA6PH8g5CdqPvZAtZCbZCDXWHICbimyCf7vgfYl53NeJAc74aqzwrg0ZBPIye1ZAoUnuTVmKj308rv59mNN64xZBDpME0SKCd4mbnAqoZArVDZAV06OCUZBaFy6BXWs6wbV";
 const PERSONA_ID = "523362768242700";
+const TYPING_OFF_DELAY = 2000
 // Imports dependencies and set up http server
 const
   request = require('request'),
@@ -105,26 +106,25 @@ app.get('/webhook', (req, res) => {
 });
 
 function handleMessage(sender_psid, received_message) {
+  callSeenTypingAPI(sender_psid, received_message);
   let response;
 
   // Checks if the message contains text
-  if (received_message.text) {
+  if (received_message.quick_reply) {
+    console.log("Received message with quick reply")
+
+    response = nyergh.storyIdToQuickReply(received_message.quick_reply.payload)
+  } else if (received_message.text) {
     console.log("received_message.text:");
     console.log(received_message.text)
+
     // Create the payload for a basic text; message, which
     // will be added to the body of our request to the Send API
-    response = nyergh.storyIdToQuickReply("STORY_INTRO")
-
-    
-    response = genTextWithPersona("hello",PERSONA_ID)
-
-    callSendAPI(sender_psid, response);
-
-    // response = {
-    //   "text": `You're name is Brian and you are hard at work.`
-    // }
-    // callSendAPI(sender_psid, response);
-
+    if (received_message.text.includes("persona")) {
+      response = genTextWithPersona("hello",PERSONA_ID)
+    } else {
+      response = nyergh.storyIdToQuickReply("STORY_INTRO")
+    }
   } else if (received_message.attachments) {
     // Get the URL of the message attachment
     // let attachment_url = received_message.attachments[0].payload.url;
@@ -155,6 +155,8 @@ function handleMessage(sender_psid, received_message) {
     // }
     // callSendAPI(sender_psid, response);
   }
+
+   setTimeout(() => {callSendAPI(sender_psid, response)}, TYPING_OFF_DELAY)
 }
 
 function handlePostback(sender_psid, received_postback) {
@@ -171,6 +173,66 @@ function handlePostback(sender_psid, received_postback) {
   }
   // Send the message to acknowledge the postback
   callSendAPI(sender_psid, response);
+}
+
+function callSeenTypingAPI(sender_psid, response) {
+  let mark_read = {
+    "recipient": { "id": sender_psid },
+    "sender_action": "mark_seen"
+  }
+
+  let typing_on = {
+    "recipient": { "id": sender_psid },
+    "sender_action": "typing_on"
+  }
+
+  let typing_off = {
+    "recipient": { "id": sender_psid },
+    "sender_action": "typing_off"
+  }
+
+  // Send the HTTP request to the Messenger Platform
+  request({
+    "uri": "https://graph.facebook.com/v2.6/me/messages",
+    "qs": { "access_token": PAGE_ACCESS_TOKEN },
+    "method": "POST",
+    "json": mark_read 
+  }, (err, res, body) => {
+    if (!err) {
+      console.log('Marked seen')
+    } else {
+      console.error("Unable to mark as seen:" + err);
+    }
+  });
+  
+  // Send the HTTP request to the Messenger Platform
+  request({
+    "uri": "https://graph.facebook.com/v2.6/me/messages",
+    "qs": { "access_token": PAGE_ACCESS_TOKEN },
+    "method": "POST",
+    "json": typing_on 
+  }, (err, res, body) => {
+    if (!err) {
+      console.log("Marked typing on")
+    } else {
+      console.error("Unable to mark typing on:" + err);
+    }
+  });
+  
+  setTimeout(() => {  
+    request({
+      "uri": "https://graph.facebook.com/v2.6/me/messages",
+      "qs": { "access_token": PAGE_ACCESS_TOKEN },
+      "method": "POST",
+      "json": typing_off 
+    }, (err, res, body) => {
+      if (!err) {
+        console.log("Marked typing off")
+      } else {
+        console.error("Unable mark typing off:" + err);
+      }
+    });
+  }, TYPING_OFF_DELAY)  
 }
 
 function callSendAPI(sender_psid, response) {
