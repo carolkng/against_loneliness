@@ -110,9 +110,12 @@ function handleMessage(sender_psid, received_message) {
     response = {
       "text": `You entered code: "${received_message.text}". Now beginning story...`
     }
-    
     callSendAPI(sender_psid, response);
 
+    response = {
+      "text": `You're name is Brian and you are hard at work.`
+    }
+    callSendAPI(sender_psid, response);
 
   } else if (received_message.attachments) {
     // Get the URL of the message attachment
