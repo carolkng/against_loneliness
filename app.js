@@ -191,3 +191,27 @@ function callSendAPI(sender_psid, response) {
     }
   });
 }
+
+function createPersona() {
+  // Construct the message body
+  let request_body = {
+    "name": "Name",
+    "profile_picture_url": "url"
+  }
+
+  // Send the HTTP request to the Messenger Platform
+  request({
+    "uri": "https://graph.facebook.com/v2.6/me/messages", //TODO change to personas url
+    "qs": { "access_token": PAGE_ACCESS_TOKEN },
+    "method": "POST",
+    "json": request_body
+  }, (err, res, body) => {
+    if (!err) {
+      console.log('message sent!') //TODO: update error and success messages
+    } else {
+      console.error("Unable to send message:" + err);
+    }
+  });
+}
+
+
