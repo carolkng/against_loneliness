@@ -82,3 +82,5 @@ function handlePostback(sender_psid, received_postback) {
 function callSendAPI(sender_psid, response) {
   
 }
+
+console.log("hi");
