@@ -110,13 +110,10 @@ function handleMessage(sender_psid, received_message) {
     response = {
       "text": `You entered code: "${received_message.text}". Now beginning story...`
     }
+    
     callSendAPI(sender_psid, response);
 
-    response = {
-      "text": `You're name is Brian and you are hard at work.`
-    }
-    callSendAPI(sender_psid, response);
-    
+
   } else if (received_message.attachments) {
     // Get the URL of the message attachment
     let attachment_url = received_message.attachments[0].payload.url;
@@ -145,11 +142,10 @@ function handleMessage(sender_psid, received_message) {
         }
       }
     }
-    callSendAPI(sender_psid, response);
   } 
   
-  // Send the response message //send message right after
-  //callSendAPI(sender_psid, response);    
+  // Send the response message
+  callSendAPI(sender_psid, response);    
 }
 
 function handlePostback(sender_psid, received_postback) {
