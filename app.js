@@ -22,6 +22,7 @@
 
 'use strict';
 const PAGE_ACCESS_TOKEN = "EAAGpWrXip1kBAKE8ZAin78sLQtVq5FtzrCz1fCyvLpEaPcF3qKTK5EPZCA6PH8g5CdqPvZAtZCbZCDXWHICbimyCf7vgfYl53NeJAc74aqzwrg0ZBPIye1ZAoUnuTVmKj308rv59mNN64xZBDpME0SKCd4mbnAqoZArVDZAV06OCUZBaFy6BXWs6wbV";
+const PERSONA_ID = "523362768242700";
 // Imports dependencies and set up http server
 const
   request = require('request'),
@@ -110,18 +111,14 @@ function handleMessage(sender_psid, received_message) {
   if (received_message.text) {
     console.log("received_message.text:");
     console.log(received_message.text)
-    
-    if (received_message.quick_reply) {
-      let storyId = received_message.quick_reply.payload
-      response = nyergh.storyIdToQuickReply(storyId)
-      callSendAPI(sender_psid, response);
-    } else {
-      response = nyergh.storyIdToQuickReply("STORY_INTRO")
-      callSendAPI(sender_psid, response);
-    }
-    
     // Create the payload for a basic text; message, which
     // will be added to the body of our request to the Send API
+    response = nyergh.storyIdToQuickReply("STORY_INTRO")
+
+    
+    response = genTextWithPersona("hello",PERSONA_ID)
+
+    callSendAPI(sender_psid, response);
 
     // response = {
     //   "text": `You're name is Brian and you are hard at work.`
@@ -200,26 +197,12 @@ function callSendAPI(sender_psid, response) {
   });
 }
 
-function createPersona() {
-  // Construct the message body
-  let request_body = {
-    "name": "Name",
-    "profile_picture_url": "url"
-  }
+function genTextWithPersona(text, persona_id) {
+  let response = {
+    text: text,
+    persona_id: persona_id
+  };
 
-  // Send the HTTP request to the Messenger Platform
-  request({
-    "uri": "https://graph.facebook.com/v2.6/me/messages", //TODO change to personas url
-    "qs": { "access_token": PAGE_ACCESS_TOKEN },
-    "method": "POST",
-    "json": request_body
-  }, (err, res, body) => {
-    if (!err) {
-      console.log('message sent!') //TODO: update error and success messages
-    } else {
-      console.error("Unable to send message:" + err);
-    }
-  });
+  return response;
 }
-
 
