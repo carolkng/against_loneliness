@@ -12,6 +12,72 @@
             }
         ]
     },
+    "GAME_INTRO": {
+        "message": "This is the start of the story. Please enter game code.",
+        "responses": [
+            {
+                "next_id": "onestart",
+                "text": "1"
+            },
+            {
+                "next_id": "twostart",
+                "text": "2."
+            },
+            {
+                "next_id": "threestart",
+                "text": "3."
+            }
+        ]
+    },
+    "onestart": {
+        "message": "While living your own life is a choice that we each make, making a difference in someone else's isn't. You see a coworker. What do you do?",
+        "responses": [
+            {
+                "next_id": "1goodending",
+                "text": "Ask how day is."
+            },
+            {
+                "next_id": "1bad ending",
+                "text": "Ignore him."
+            }
+        ]
+    },
+    "1goodending": {
+        "message": "How are you doing? Hope you have a wonderful day! And they did. NEW GAMECODE=2",
+        "responses": [
+            {
+                "next_id": "GAME_INTRO",
+                "text": "Start game over"
+            }
+        ]
+    },
+    "1badending": {
+        "message": "You didn't say anything. And it would remain that way. NEW GAMECODE=3",
+        "responses": [
+            {
+                "next_id": "GAME_INTRO",
+                "text": "Start game over"
+            }
+        ]
+    },
+    "twostart": {
+        "message": "In this game, you would play as the befriended coworker",
+        "responses": [
+            {
+                "next_id": "onestart",
+                "text": "Replay first story"
+            }
+        ]
+    },
+    "threestart": {
+        "message": "In this game, you would play as the ignored, lonely coworker",
+        "responses": [
+            {
+                "next_id": "onestart",
+                "text": "Replay first story"
+            }
+        ]
+    },
     "ENTER_ROOM": {
         "message": "You enter a room. What do you do?",
         "responses": [

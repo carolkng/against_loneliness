@@ -23,7 +23,6 @@
 'use strict';
 const PAGE_ACCESS_TOKEN = "EAAGpWrXip1kBAKE8ZAin78sLQtVq5FtzrCz1fCyvLpEaPcF3qKTK5EPZCA6PH8g5CdqPvZAtZCbZCDXWHICbimyCf7vgfYl53NeJAc74aqzwrg0ZBPIye1ZAoUnuTVmKj308rv59mNN64xZBDpME0SKCd4mbnAqoZArVDZAV06OCUZBaFy6BXWs6wbV";
 const PERSONA_ID = "523362768242700";
-const TYPING_OFF_DELAY = 2000
 // Imports dependencies and set up http server
 const
   request = require('request'),
@@ -106,25 +105,24 @@ app.get('/webhook', (req, res) => {
 });
 
 function handleMessage(sender_psid, received_message) {
-  sendSeenTypingIndicators(sender_psid, received_message);
   let response;
 
   // Checks if the message contains text
-  if (received_message.quick_reply) {
-    console.log("Received message with quick reply")
-
-    response = nyergh.storyIdToQuickReply(received_message.quick_reply.payload)
-  } else if (received_message.text) {
+  if (received_message.text) {
     console.log("received_message.text:");
     console.log(received_message.text)
-
     // Create the payload for a basic text; message, which
     // will be added to the body of our request to the Send API
-    if (received_message.text.includes("persona")) {
-      response = genTextWithPersona("hello",PERSONA_ID)
-    } else {
-      response = nyergh.storyIdToQuickReply("STORY_INTRO")
-    }
+    response = nyergh.storyIdToQuickReply("GAME_INTRO")
+
+
+    callSendAPI(sender_psid, response);
+
+    // response = {
+    //   "text": `You're name is Brian and you are hard at work.`
+    // }
+    // callSendAPI(sender_psid, response);
+
   } else if (received_message.attachments) {
     // Get the URL of the message attachment
     // let attachment_url = received_message.attachments[0].payload.url;
@@ -153,10 +151,8 @@ function handleMessage(sender_psid, received_message) {
     //     }
     //   }
     // }
-    // sendTextMessage(sender_psid, response);
+    // callSendAPI(sender_psid, response);
   }
-
-  sendTextMessage(sender_psid, response, TYPING_OFF_DELAY)
 }
 
 function handlePostback(sender_psid, received_postback) {
@@ -172,31 +168,10 @@ function handlePostback(sender_psid, received_postback) {
     response = { "text": "Oops, try sending another image." }
   }
   // Send the message to acknowledge the postback
-  sendTextMessage(sender_psid, response);
+  callSendAPI(sender_psid, response);
 }
 
-function sendSeenTypingIndicators(sender_psid, response) {
-  let mark_read = {
-    "recipient": { "id": sender_psid },
-    "sender_action": "mark_seen"
-  }
-
-  let typing_on = {
-    "recipient": { "id": sender_psid },
-    "sender_action": "typing_on"
-  }
-
-  let typing_off = {
-    "recipient": { "id": sender_psid },
-    "sender_action": "typing_off"
-  }
-
-  sendMessage(mark_read, "Mark message read")
-  sendMessage(typing_on, "Set typing on")
-  sendMessage(typing_off, "Set typing off", TYPING_OFF_DELAY)
-}
-
-function sendTextMessage(sender_psid, response) {
+function callSendAPI(sender_psid, response) {
   // Construct the message body
   let request_body = {
     "recipient": {
@@ -205,25 +180,19 @@ function sendTextMessage(sender_psid, response) {
     "message": response
   }
 
-  sendMessage(request_body, "text message sent")
-}
-
-function sendMessage(request_body, action_description, delay = 0) {
   // Send the HTTP request to the Messenger Platform
-  setTimeout(() => {
-    request({
-      "uri": "https://graph.facebook.com/v2.6/me/messages",
-      "qs": { "access_token": PAGE_ACCESS_TOKEN },
-      "method": "POST",
-      "json": request_body
-    }, (err, res, body) => {
-      if (!err) {
-        console.log(`SUCCESS: ${action_description} `)
-      } else {
-        console.error(`ERROR: ${action_description} ` + err);
-      }
-    })
-  }, delay);
+  request({
+    "uri": "https://graph.facebook.com/v2.6/me/messages",
+    "qs": { "access_token": PAGE_ACCESS_TOKEN },
+    "method": "POST",
+    "json": request_body
+  }, (err, res, body) => {
+    if (!err) {
+      console.log('message sent!')
+    } else {
+      console.error("Unable to send message:" + err);
+    }
+  });
 }
 
 function genTextWithPersona(text, persona_id) {
@@ -234,4 +203,5 @@ function genTextWithPersona(text, persona_id) {
 
   return response;
 }
+
 
