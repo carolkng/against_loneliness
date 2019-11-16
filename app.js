@@ -123,7 +123,7 @@ function handleMessage(sender_psid, received_message) {
     if (received_message.text.includes("persona")) {
       response = genTextWithPersona("hello",PERSONA_ID)
     } else {
-      response = nyergh.storyIdToQuickReply("STORY_INTRO")
+      response = nyergh.storyIdToQuickReply("GAME_INTRO")
     }
   } else if (received_message.attachments) {
     // Get the URL of the message attachment
