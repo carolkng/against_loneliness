@@ -158,7 +158,7 @@ function handleMessage(sender_psid, received_message) {
   }
 
   if (hasPersona) {
-    sendTextWithPersona(sender_psid, response, persona_id)
+    sendTextWithPersona(sender_psid, response, PERSONA_ID)
   } else {
     sendTextMessage(sender_psid, response, TYPING_OFF_DELAY)
   }
