@@ -1,5 +1,7 @@
 'use strict';
 
+const PAGE_ACCESS_TOKEN = "EAAOk3VqTNZBkBAGsbHDW3PsvG1b59PCcfo6SYKnVZAvEDd3F6DWxykNTxr2519msw1cDjiZBbseJmQRv4IAucXDyjPuRT1P0NRe22JpjNr898ny7IKaBr0TlrRlyaNqhJhWsd2rIEZAr2J5BU4VZAlBpudPPC7KyrKv5nhZBgZCyzcTWT3Dbtlh";
+
 // Imports dependencies and set up http server
 const
   express = require('express'),
@@ -19,16 +21,24 @@ app.post('/webhook', (req, res) => {
   
       // Iterates over each entry - there may be multiple if batched
       body.entry.forEach(function(entry) {
-  
-      // Gets the body of the webhook event
-      let webhook_event = entry.messaging[0];
-      console.log(webhook_event);
 
-      // Get the sender PSID
-      let sender_psid = webhook_event.sender.id;
-      console.log('Sender PSID: ' + sender_psid);
-
-
+        // Gets the body of the webhook event
+        let webhook_event = entry.messaging[0];
+        console.log(webhook_event);
+      
+      
+        // Get the sender PSID
+        let sender_psid = webhook_event.sender.id;
+        console.log('Sender PSID: ' + sender_psid);
+      
+        // Check if the event is a message or postback and
+        // pass the event to the appropriate handler function
+        if (webhook_event.message) {
+          handleMessage(sender_psid, webhook_event.message);        
+        } else if (webhook_event.postback) {
+          handlePostback(sender_psid, webhook_event.postback);
+        }
+        
       });
   
       // Returns a '200 OK' response to all requests
@@ -69,9 +79,22 @@ app.get('/webhook', (req, res) => {
   });
 
   // Handles messages events
-function handleMessage(sender_psid, received_message) {
+  function handleMessage(sender_psid, received_message) {
 
-}
+    let response;
+  
+    // Check if the message contains text
+    if (received_message.text) {    
+  
+      // Create the payload for a basic text message
+      response = {
+        "text": `You sent the message: "${received_message.text}". Now send me an image!`
+      }
+    }  
+    
+    // Sends the response message
+    callSendAPI(sender_psid, response);    
+  }
 
 // Handles messaging_postbacks events
 function handlePostback(sender_psid, received_postback) {
@@ -80,7 +103,27 @@ function handlePostback(sender_psid, received_postback) {
 
 // Sends response messages via the Send API
 function callSendAPI(sender_psid, response) {
-  
+  // Construct the message body
+  let request_body = {
+    "recipient": {
+      "id": sender_psid
+    },
+    "message": response
+  }
+
+  // Send the HTTP request to the Messenger Platform
+  request({
+    "uri": "https://graph.facebook.com/v2.6/me/messages",
+    "qs": { "access_token": process.env.PAGE_ACCESS_TOKEN },
+    "method": "POST",
+    "json": request_body
+  }, (err, res, body) => {
+    if (!err) {
+      console.log('message sent!')
+    } else {
+      console.error("Unable to send message:" + err);
+    }
+  }); 
 }
 
 console.log("hi");
