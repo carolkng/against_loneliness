@@ -106,7 +106,7 @@ app.get('/webhook', (req, res) => {
 });
 
 function handleMessage(sender_psid, received_message) {
-  callSeenTypingAPI(sender_psid, received_message);
+  sendSeenTypingIndicators(sender_psid, received_message);
   let response;
 
   // Checks if the message contains text
@@ -153,10 +153,10 @@ function handleMessage(sender_psid, received_message) {
     //     }
     //   }
     // }
-    // callSendAPI(sender_psid, response);
+    // sendTextMessage(sender_psid, response);
   }
 
-   setTimeout(() => {callSendAPI(sender_psid, response)}, TYPING_OFF_DELAY)
+  sendTextMessage(sender_psid, response, TYPING_OFF_DELAY)
 }
 
 function handlePostback(sender_psid, received_postback) {
@@ -172,10 +172,10 @@ function handlePostback(sender_psid, received_postback) {
     response = { "text": "Oops, try sending another image." }
   }
   // Send the message to acknowledge the postback
-  callSendAPI(sender_psid, response);
+  sendTextMessage(sender_psid, response);
 }
 
-function callSeenTypingAPI(sender_psid, response) {
+function sendSeenTypingIndicators(sender_psid, response) {
   let mark_read = {
     "recipient": { "id": sender_psid },
     "sender_action": "mark_seen"
@@ -191,51 +191,12 @@ function callSeenTypingAPI(sender_psid, response) {
     "sender_action": "typing_off"
   }
 
-  // Send the HTTP request to the Messenger Platform
-  request({
-    "uri": "https://graph.facebook.com/v2.6/me/messages",
-    "qs": { "access_token": PAGE_ACCESS_TOKEN },
-    "method": "POST",
-    "json": mark_read 
-  }, (err, res, body) => {
-    if (!err) {
-      console.log('Marked seen')
-    } else {
-      console.error("Unable to mark as seen:" + err);
-    }
-  });
-  
-  // Send the HTTP request to the Messenger Platform
-  request({
-    "uri": "https://graph.facebook.com/v2.6/me/messages",
-    "qs": { "access_token": PAGE_ACCESS_TOKEN },
-    "method": "POST",
-    "json": typing_on 
-  }, (err, res, body) => {
-    if (!err) {
-      console.log("Marked typing on")
-    } else {
-      console.error("Unable to mark typing on:" + err);
-    }
-  });
-  
-  setTimeout(() => {  
-    request({
-      "uri": "https://graph.facebook.com/v2.6/me/messages",
-      "qs": { "access_token": PAGE_ACCESS_TOKEN },
-      "method": "POST",
-      "json": typing_off 
-    }, (err, res, body) => {
-      if (!err) {
-        console.log("Marked typing off")
-      } else {
-        console.error("Unable mark typing off:" + err);
-      }
-    });
-  }, TYPING_OFF_DELAY)  
+  sendMessage(mark_read, "Mark message read")
+  sendMessage(typing_on, "Set typing on")
+  sendMessage(typing_off, "Set typing off", TYPING_OFF_DELAY)
 }
 
-function callSendAPI(sender_psid, response) {
+function sendTextMessage(sender_psid, response) {
   // Construct the message body
   let request_body = {
     "recipient": {
@@ -244,20 +205,25 @@ function callSendAPI(sender_psid, response) {
     "message": response
   }
 
+  sendMessage(request_body, "text message sent")
+}
+
+function sendMessage(request_body, action_description, delay = 0) {
   // Send the HTTP request to the Messenger Platform
-  request({
-    "uri": "https://graph.facebook.com/v2.6/me/messages",
-    "qs": { "access_token": PAGE_ACCESS_TOKEN },
-    "method": "POST",
-    "json": request_body
-  }, (err, res, body) => {
-    if (!err) {
-      console.log('message sent!')
-      console.log(body)
-    } else {
-      console.error("Unable to send message:" + err);
-    }
-  });
+  setTimeout(() => {
+    request({
+      "uri": "https://graph.facebook.com/v2.6/me/messages",
+      "qs": { "access_token": PAGE_ACCESS_TOKEN },
+      "method": "POST",
+      "json": request_body
+    }, (err, res, body) => {
+      if (!err) {
+        console.log(`SUCCESS: ${action_description} `)
+      } else {
+        console.error(`ERROR: ${action_description} ` + err);
+      }
+    })
+  }, delay);
 }
 
 function genTextWithPersona(text, persona_id) {
