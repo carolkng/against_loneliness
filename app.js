@@ -22,7 +22,7 @@
 
 'use strict';
 const PAGE_ACCESS_TOKEN = "EAAGpWrXip1kBAKE8ZAin78sLQtVq5FtzrCz1fCyvLpEaPcF3qKTK5EPZCA6PH8g5CdqPvZAtZCbZCDXWHICbimyCf7vgfYl53NeJAc74aqzwrg0ZBPIye1ZAoUnuTVmKj308rv59mNN64xZBDpME0SKCd4mbnAqoZArVDZAV06OCUZBaFy6BXWs6wbV";
-const PERSONA_ID = "523362768242700";
+const PERSONA_ID = "736072903558118";
 const TYPING_OFF_DELAY = 2000
 // Imports dependencies and set up http server
 const
@@ -124,7 +124,7 @@ function handleMessage(sender_psid, received_message) {
     if (received_message.text.includes("persona")) {
       hasPersona = true
     } else {
-      response = nyergh.storyIdToQuickReply("STORY_INTRO")
+      response = nyergh.storyIdToQuickReply("GAME_INTRO")
     }
   } else if (received_message.attachments) {
     // Get the URL of the message attachment
@@ -243,4 +243,5 @@ function sendTextWithPersona(sender_psid, text, persona_id) {
 
   sendMessage(request_body, "persona message sent")
 }
+
 
