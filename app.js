@@ -108,6 +108,7 @@ app.get('/webhook', (req, res) => {
 function handleMessage(sender_psid, received_message) {
   sendSeenTypingIndicators(sender_psid, received_message);
   let response;
+  let hasPersona = false;
 
   // Checks if the message contains text
   if (received_message.quick_reply) {
@@ -121,7 +122,7 @@ function handleMessage(sender_psid, received_message) {
     // Create the payload for a basic text; message, which
     // will be added to the body of our request to the Send API
     if (received_message.text.includes("persona")) {
-      response = genTextWithPersona("hello",PERSONA_ID)
+      hasPersona = true
     } else {
       response = nyergh.storyIdToQuickReply("STORY_INTRO")
     }
@@ -156,7 +157,11 @@ function handleMessage(sender_psid, received_message) {
     // sendTextMessage(sender_psid, response);
   }
 
-  sendTextMessage(sender_psid, response, TYPING_OFF_DELAY)
+  if (hasPersona) {
+    sendTextWithPersona(sender_psid, response, persona_id)
+  } else {
+    sendTextMessage(sender_psid, response, TYPING_OFF_DELAY)
+  }
 }
 
 function handlePostback(sender_psid, received_postback) {
@@ -226,12 +231,16 @@ function sendMessage(request_body, action_description, delay = 0) {
   }, delay);
 }
 
-function genTextWithPersona(text, persona_id) {
-  let response = {
-    text: text,
-    persona_id: persona_id
-  };
+function sendTextWithPersona(sender_psid, text, persona_id) {
+  // Construct the message body
+  let request_body = {
+    "recipient": {
+      "id": sender_psid
+    },
+    "message": response,
+    "persona_id": persona_id
+  }
 
-  return response;
+  sendMessage(request_body, "persona message sent")
 }
 
