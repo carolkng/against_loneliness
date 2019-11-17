@@ -15,6 +15,23 @@ class Story {
 
     return Response.genQuickReply(node.message, quickReplies);
   }
+
+  static storyIdToReply(story_id) {
+    let node = STORY[story_id]
+    let response = {
+        "text": node.message
+    }
+    return response
+  }
+
+  static nextState(currentState, messageText) {
+    let node = STORY[currentState]
+    for (let response of node.responses) {
+        if (response.text.includes(messageText)) {
+            return response.next_id
+        }
+    }
+  }
 }
 
 module.exports = Story;

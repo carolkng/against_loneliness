@@ -1,25 +1,3 @@
-
-/**
- * Copyright 2017-present, Facebook, Inc. All rights reserved.
- *
- * This source code is licensed under the license found in the
- * LICENSE file in the root directory of this source tree.
- *
- * Messenger Platform Quick Start Tutorial
- *
- * This is the completed code for the Messenger Platform quick start tutorial
- *
- * https://developers.facebook.com/docs/messenger-platform/getting-started/quick-start/
- *
- * To run this code, you must do the following:
- *
- * 1. Deploy this code to a server running Node.js
- * 2. Run `npm install`
- * 3. Update the VERIFY_TOKEN
- * 4. Add your PAGE_ACCESS_TOKEN to your environment vars
- *
- */
-
 'use strict';
 const PAGE_ACCESS_TOKEN = "EAAGpWrXip1kBAKE8ZAin78sLQtVq5FtzrCz1fCyvLpEaPcF3qKTK5EPZCA6PH8g5CdqPvZAtZCbZCDXWHICbimyCf7vgfYl53NeJAc74aqzwrg0ZBPIye1ZAoUnuTVmKj308rv59mNN64xZBDpME0SKCd4mbnAqoZArVDZAV06OCUZBaFy6BXWs6wbV";
 const PERSONA_ID = "736072903558118";
@@ -31,6 +9,8 @@ const
   body_parser = require('body-parser'),
   nyergh = require('./story'),
   app = express().use(body_parser.json()); // creates express http server
+
+var users = {}
 
 // Sets server port and logs message on success
 app.listen(process.env.PORT || 1337, () => console.log('webhook is listening'));
@@ -116,17 +96,19 @@ function handleMessage(sender_psid, received_message) {
 
     response = nyergh.storyIdToQuickReply(received_message.quick_reply.payload)
   } else if (received_message.text) {
-    console.log("received_message.text:");
-    console.log(received_message.text)
+    console.log("received_message.text: " + received_message.text);
 
-    // Create the payload for a basic text; message, which
-    // will be added to the body of our request to the Send API
-    if (received_message.text.includes("persona")) {
-      hasPersona = true
-      response = nyergh.storyIdToQuickReply("GAME_INTRO")
+    let next_state;
+    if (sender_psid in users) {
+      next_state = nyergh.nextState(users[sender_psid].state, received_message.text)
     } else {
-      response = nyergh.storyIdToQuickReply("GAME_INTRO")
+      next_state = "GAME_INTRO"
+      response = nyergh.storyIdToReply("GAME_INTRO")
     }
+
+    response = nyergh.storyIdToReply(next_state)
+    users[sender_psid] = { "state": next_state }
+
   } else if (received_message.attachments) {
     // Get the URL of the message attachment
     // let attachment_url = received_message.attachments[0].payload.url;
@@ -158,11 +140,12 @@ function handleMessage(sender_psid, received_message) {
     // sendTextMessage(sender_psid, response);
   }
 
-  if (hasPersona) {
+  if (received_message.text.includes("persona")) {
     sendTextWithPersona(sender_psid, response, PERSONA_ID)
   } else {
     sendTextMessage(sender_psid, response, TYPING_OFF_DELAY)
   }
+  console.log("sender state: " + users[sender_psid].state)
 }
 
 function handlePostback(sender_psid, received_postback) {
