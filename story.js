@@ -18,10 +18,14 @@ class Story {
 
   static storyIdToReply(story_id) {
     let node = STORY[story_id]
-    let response = {
-        "text": node.message
+    let messages = node.message.split("\n")
+    let responses = []
+    for (let m of messages) {
+        responses.push({
+            "text": m
+        })
     }
-    return response
+    return responses
   }
 
   static nextState(currentState, messageText) {
@@ -31,6 +35,7 @@ class Story {
             return response.next_id
         }
     }
+    return currentState
   }
 }
 

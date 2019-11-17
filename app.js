@@ -1,7 +1,8 @@
 'use strict';
 const PAGE_ACCESS_TOKEN = "EAAGpWrXip1kBAKE8ZAin78sLQtVq5FtzrCz1fCyvLpEaPcF3qKTK5EPZCA6PH8g5CdqPvZAtZCbZCDXWHICbimyCf7vgfYl53NeJAc74aqzwrg0ZBPIye1ZAoUnuTVmKj308rv59mNN64xZBDpME0SKCd4mbnAqoZArVDZAV06OCUZBaFy6BXWs6wbV";
 const PERSONA_ID = "736072903558118";
-const TYPING_OFF_DELAY = 2000
+const TYPING_OFF_DELAY = 3000
+const BETWEEN_MESSAGE_DELAY = 250
 // Imports dependencies and set up http server
 const
   request = require('request'),
@@ -87,7 +88,7 @@ app.get('/webhook', (req, res) => {
 
 function handleMessage(sender_psid, received_message) {
   sendSeenTypingIndicators(sender_psid, received_message);
-  let response;
+  let responses;
   let hasPersona = false;
 
   // Checks if the message contains text
@@ -103,10 +104,15 @@ function handleMessage(sender_psid, received_message) {
       next_state = nyergh.nextState(users[sender_psid].state, received_message.text)
     } else {
       next_state = "GAME_INTRO"
-      response = nyergh.storyIdToReply("GAME_INTRO")
+      users[sender_psid] = {}
     }
 
-    response = nyergh.storyIdToReply(next_state)
+    responses = nyergh.storyIdToReply(next_state)
+    // We didn't get a valid state to move to, so we keep the current state.
+    if (next_state === users[sender_psid].state) {
+      let firstWord = received_message.text.split(" ")[0]
+      sendTextMessage(sender_psid, {"text": `I don't know the word "${firstWord}".`})
+    }
     users[sender_psid] = { "state": next_state }
 
   } else if (received_message.attachments) {
@@ -141,9 +147,9 @@ function handleMessage(sender_psid, received_message) {
   }
 
   if (received_message.text.includes("persona")) {
-    sendTextWithPersona(sender_psid, response, PERSONA_ID)
+    sendTextMessage(sender_psid, responses, TYPING_OFF_DELAY, PERSONA_ID)
   } else {
-    sendTextMessage(sender_psid, response, TYPING_OFF_DELAY)
+    sendTextMessage(sender_psid, responses, TYPING_OFF_DELAY, "")
   }
   console.log("sender state: " + users[sender_psid].state)
 }
@@ -185,16 +191,31 @@ function sendSeenTypingIndicators(sender_psid, response) {
   sendMessage(typing_off, "Set typing off", TYPING_OFF_DELAY)
 }
 
-function sendTextMessage(sender_psid, response) {
+function sendTextMessage(sender_psid, responses, delay = 0, persona_id = "") {
   // Construct the message body
-  let request_body = {
-    "recipient": {
-      "id": sender_psid
-    },
-    "message": response
-  }
+  let request_body;
+  let count = 0;
 
-  sendMessage(request_body, "text message sent")
+  for (let res of responses) {
+    if (persona_id === PERSONA_ID) {
+      request_body = {
+        "recipient": {
+          "id": sender_psid
+        },
+        "message": res,
+        "persona_id": PERSONA_ID
+      }
+    } else {
+      request_body = {
+        "recipient": {
+          "id": sender_psid
+        },
+        "message": res,
+      }
+    }
+    sendMessage(request_body, `Message sent text: ${res.text}`, delay + count * BETWEEN_MESSAGE_DELAY)
+    count++
+  }
 }
 
 function sendMessage(request_body, action_description, delay = 0) {
@@ -225,7 +246,7 @@ function sendTextWithPersona(sender_psid, response, persona_id) {
     "persona_id": persona_id
   }
 
-  sendMessage(request_body, "persona message sent")
+  sendMessage(request_body, `Message sent text: ${response.text} w/ persona ${persona_id}`)
 }
 
 
