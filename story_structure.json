@@ -51,6 +51,15 @@
             }
         ]
     },
+    "1bad ending": {
+        "message": "You didn't say anything. And it would remain that way. NEW GAMECODE=3",
+        "responses": [
+            {
+                "next_id": "GAME_INTRO",
+                "text": "Start game over"
+            }
+        ]
+    },
     "1badending": {
         "message": "You didn't say anything. And it would remain that way. NEW GAMECODE=3",
         "responses": [
