@@ -13,7 +13,7 @@
         ]
     },
     "GAME_INTRO": {
-        "message": "This is the start of the story. Please enter game code.",
+        "message": "This is the start of the story. Please enter 'start' to begin.",
         "responses": [
             {
                 "next_id": "onestart",
@@ -27,23 +27,56 @@
                 "next_id": "threestart",
                 "text": "3."
             }
+            {
+                "next_id": "onestart",
+                "text": "start"
+            }
+
         ]
     },
     "onestart": {
-        "message": "While living your own life is a choice that we each make, making a difference in someone else's isn't. You see a coworker. What do you do?",
+        "message": "While living your own life is a choice that we each make, making a difference in someone else's isn't. \n You're an overworked software engineer. It's been weeks since a good night's sleep. You can't wait to get home and enjoy the weekend. \n The last minute before the building closes a coworker comes and asks you a favor. \n 'I'm swamped with work and I could really use your help tomorrow. Can you help?'",
         "responses": [
             {
                 "next_id": "1goodending",
-                "text": "Ask how day is."
+                "text": "Agree"
+            },
+            {
+                "next_id": "1goodending",
+                "text": "agree"
+            },
+            {
+                "next_id": "1goodending",
+                "text": "Yes"
+            },
+            {
+                "next_id": "1goodending",
+                "text": "yes"
+            },
+            {
+                "next_id": "1goodending",
+                "text": "Ok"
+            },
+            {
+                "next_id": "1goodending",
+                "text": "ok"
             },
             {
                 "next_id": "1badending",
-                "text": "Ignore him."
+                "text": "No"
+            },
+            {
+                "next_id": "1badending",
+                "text": "no"
+            },
+            {
+                "next_id": "1badending",
+                "text": "Nah, I'm busy"
             }
         ]
     },
     "1goodending": {
-        "message": "How are you doing? Hope you have a wonderful day! And they did. NEW GAMECODE=2",
+        "message": "'How are you doing? Hope you have a wonderful day!' And they did. \n You would have no idea how impactful your greeting was.",
         "responses": [
             {
                 "next_id": "GAME_INTRO",
@@ -52,7 +85,7 @@
         ]
     },
     "1badending": {
-        "message": "You didn't say anything. And it would remain that way. NEW GAMECODE=3",
+        "message": "You didn't say anything. And it would remain that way. You would have no idea how impactful your silence would have.",
         "responses": [
             {
                 "next_id": "GAME_INTRO",
