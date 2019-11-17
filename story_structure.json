@@ -84,6 +84,15 @@
             }
         ]
     },
+    "1bad ending": {
+        "message": "You didn't say anything. And it would remain that way. You would have no idea how impactful your silence would have.",
+        "responses": [
+            {
+                "next_id": "GAME_INTRO",
+                "text": "Start game over"
+            }
+        ]
+    },
     "1badending": {
         "message": "You didn't say anything. And it would remain that way. You would have no idea how impactful your silence would have.",
         "responses": [
