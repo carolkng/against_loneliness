@@ -37,7 +37,7 @@
                 "text": "Ask how day is."
             },
             {
-                "next_id": "1bad ending",
+                "next_id": "1badending",
                 "text": "Ignore him."
             }
         ]
