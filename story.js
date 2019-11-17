@@ -31,6 +31,7 @@ class Story {
             return response.next_id
         }
     }
+    return currentState
   }
 }
 

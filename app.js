@@ -107,6 +107,11 @@ function handleMessage(sender_psid, received_message) {
     }
 
     response = nyergh.storyIdToReply(next_state)
+    // We didn't get a valid state to move to, so we keep the current state.
+    if (next_state === users[sender_psid].state) {
+      let firstWord = received_message.text.split(" ")[0]
+      sendTextMessage(sender_psid, {"text": `I don't know the word "${firstWord}".`})
+    }
     users[sender_psid] = { "state": next_state }
 
   } else if (received_message.attachments) {
